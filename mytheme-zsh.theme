@@ -1,46 +1,81 @@
 # emojiV2
 
 # Prompt setup
-PROMPT='$(current_dir)$(git_prompt_info) 
-%{$fg[cyan]%}✈ %{$reset_color%} '
+PROMPT='$(current_dir)$(git_prompt_info)$(_git_time_since_commit) %{$reset_color%}%{$fg[cyan]%}➜ %{$reset_color%'
+RPROMPT='%(?.%{$fg[green]%}✔%f.%{$fg[red]%}✘%f)'
 
-
-# Command prompt setup
-RPROMPT='%(?.⚡.%{$fg[red]%}✘%f) '
 
 # Git suffix and prefix
-ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg[blue]%}(👾 "
-ZSH_THEME_GIT_PROMPT_SUFFIX="%{$fg[blue]%})"
+ZSH_THEME_GIT_PROMPT_PREFIX="$fg[green]👾 "
+ZSH_THEME_GIT_PROMPT_SUFFIX="%{$fg[green]%} "
 ZSH_THEME_GIT_PROMPT_DIRTY=" %{$fg[red]%}✘%{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_CLEAN=" %{$fg[green]%}✔%{$reset_color%}"
-
 
 # Additional functions
 
 function current_dir {
   # Settings up current directory and setting max width for it:
   local _max_pwd_length="65"
-  local color='cyan'  # Change the color to cyan
-  local folder_icon=' 📁'  # The folder icon emoji
+  local color="cyan" 
+  local folder_icon='📁'  # The folder icon emoji
 
   if [[ "$SOBOLE_THEME_MODE" == 'dark' ]]; then
     color='white'
   fi
 
-  if [[ $(echo -n $PWD | wc -c) -gt ${_max_pwd_length} ]]; then
+  local current_directory="$(basename "$PWD")"
+
+  if [[ $(echo -n "$current_directory" | wc -c) -gt ${_max_pwd_length} ]]; then
     echo "%{$fg_bold[$color]%}%-2~ ... ${folder_icon} %3~%{$reset_color%} "
   else
-    echo "%{$fg_bold[$color]%}%~${folder_icon} %{$reset_color%} "
+    echo "%{$fg_bold[$color]%}$current_directory${folder_icon} %{$reset_color%} "
   fi
 }
 
 
+function _git_time_since_commit() {
+# Only proceed if there is actually a commit.
+  if git log -1 > /dev/null 2>&1; then
+    # Get the last commit.
+    last_commit=$(git log --pretty=format:'%at' -1 2> /dev/null)
+    now=$(date +%s)
+    seconds_since_last_commit=$((now-last_commit))
+
+    # Totals
+    minutes=$((seconds_since_last_commit / 60))
+    hours=$((seconds_since_last_commit/3600))
+
+    # Sub-hours and sub-minutes
+    days=$((seconds_since_last_commit / 86400))
+    sub_hours=$((hours % 24))
+    sub_minutes=$((minutes % 60))
+
+    if [ $hours -ge 24 ]; then
+      commit_age="${days}d %{$fg[white]%}ago%{$reset_color%}"
+    elif [ $minutes -gt 60 ]; then
+      commit_age="${sub_hours}h${sub_minutes}m %{$fg[white]%}ago%{$reset_color%}"
+    else
+      commit_age="${minutes}m %{$fg[white]%}ago%{$reset_color%}"
+    fi
+    if [[ -n $(git status -s 2> /dev/null) ]]; then
+        if [ "$hours" -gt 4 ]; then
+            COLOR="$ZSH_THEME_GIT_TIME_SINCE_COMMIT_LONG"
+        elif [ "$minutes" -gt 30 ]; then
+            COLOR="$ZSH_THEME_GIT_TIME_SHORT_COMMIT_MEDIUM"
+        else
+            COLOR="$ZSH_THEME_GIT_TIME_SINCE_COMMIT_SHORT"
+        fi
+    else
+        COLOR="$ZSH_THEME_GIT_TIME_SINCE_COMMIT_NEUTRAL"
+    fi
 
 
-
+    echo "$COLOR$commit_age%{$reset_color%}"
+    else {
+    	echo "✭"
+    }
+  fi
+}
 
 # End of theme
-
-
-
 
