@@ -1,15 +1,18 @@
-# emojiV2
+# emojishell
 
 # Prompt setup
-PROMPT='$(current_dir)$(git_prompt_info)$(_git_time_since_commit) %{$reset_color%}%{$fg[cyan]%}➜ %{$reset_color%'
-RPROMPT='%(?.%{$fg[green]%}✔%f.%{$fg[red]%}✘%f)'
+PROMPT='$(current_dir)$(git_prompt_info)$(_git_time_since_commit) %{$reset_color%}%{$fg[cyan]%}➜ %{$reset_color%' 
+# Configure the main prompt, including current directory, Git information, and time since last commit.
 
+RPROMPT='%(?.%{$fg[green]%}✔%f.%{$fg[red]%}✘%f)'
+# Configure the right prompt (RPROMPT) to display command success/failure indicators.
 
 # Git suffix and prefix
 ZSH_THEME_GIT_PROMPT_PREFIX="$fg[green]👾 "
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{$fg[green]%} "
 ZSH_THEME_GIT_PROMPT_DIRTY=" %{$fg[red]%}✘%{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_CLEAN=" %{$fg[green]%}✔%{$reset_color%}"
+# Define Git branch and status indicators, including clean and dirty states.
 
 # Additional functions
 
@@ -31,10 +34,10 @@ function current_dir {
     echo "%{$fg_bold[$color]%}$current_directory${folder_icon} %{$reset_color%} "
   fi
 }
-
+# Function to display the current directory with color adjustments for dark mode.
 
 function _git_time_since_commit() {
-# Only proceed if there is actually a commit.
+  # Only proceed if there is actually a commit.
   if git log -1 > /dev/null 2>&1; then
     # Get the last commit.
     last_commit=$(git log --pretty=format:'%at' -1 2> /dev/null)
@@ -69,13 +72,12 @@ function _git_time_since_commit() {
         COLOR="$ZSH_THEME_GIT_TIME_SINCE_COMMIT_NEUTRAL"
     fi
 
-
     echo "$COLOR$commit_age%{$reset_color%}"
     else {
     	echo "✭"
     }
   fi
 }
+# Function to display the time since the last Git commit with color-coded indicators.
 
 # End of theme
-
