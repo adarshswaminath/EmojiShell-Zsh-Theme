@@ -1,0 +1,44 @@
+# emojiV2
+
+# Prompt setup
+PROMPT='$(current_dir)$(git_prompt_info)
+ ❯❯❯ '
+
+
+# Command prompt setup
+RPROMPT='%(?.⚡.%{$fg[red]%}✘%f)'
+
+# Git suffix and prefix
+ZSH_THEME_GIT_PROMPT_PREFIX="("
+ZSH_THEME_GIT_PROMPT_SUFFIX=")"
+ZSH_THEME_GIT_PROMPT_DIRTY=":🚮"
+ZSH_THEME_GIT_PROMPT_CLEAN="✨"
+
+
+# Additional functions
+
+function current_dir {
+  # Settings up current directory and settings max width for it:
+  local _max_pwd_length="65"
+  local color='cyan'  # Change the color to cyan
+  local folder_icon=' 📁'  # The folder icon emoji
+
+  if [[ "$SOBOLE_THEME_MODE" == 'dark' ]]; then
+    color='white'
+  fi
+
+  if [[ $(echo -n $PWD | wc -c) -gt ${_max_pwd_length} ]]; then
+    echo "%{$fg_bold[$color]%}%-2~ ... ${folder_icon} %3~%{$reset_color%} "
+  else
+    echo "%{$fg_bold[$color]%}%~${folder_icon} %{$reset_color%} "
+  fi
+}
+
+
+
+
+
+# End of theme
+
+
+
