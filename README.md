@@ -44,7 +44,7 @@ The prompt is designed to provide you with quick and useful information at a gla
 
 - If the last commit was made within the last 4 hours, the time is displayed in yellow, indicating somewhat recent activity.
 
-- If the last commit was made more than 4 hours ago, the time is displayed in red, indicating that it's been a while since the last commit.
+- If the last commit was made more than 4 hours ago, the time is displayed in red, indicating that it's been a while since the last commit
 
 ## Installation
 1. Clone the emojishell repo:
